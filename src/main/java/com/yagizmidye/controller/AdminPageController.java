@@ -5,20 +5,34 @@ import com.yagizmidye.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import com.yagizmidye.service.OrderService;
 
 @Controller
 public class AdminPageController {
 
     private final ProductService productService;
+    private final OrderService orderService;
 
-    public AdminPageController(ProductService productService) {
+    public AdminPageController(ProductService productService,
+                               OrderService orderService) {
         this.productService = productService;
+        this.orderService = orderService;
     }
-
     @GetMapping("/admin/products")
     public String adminProductsPage(Model model) {
+
         model.addAttribute("products", productService.getAllProducts());
+
         model.addAttribute("product", new Product());
+
+        model.addAttribute("productCount", productService.getProductCount());
+
+        model.addAttribute("orderCount", orderService.getTotalOrderCount());
+
+        model.addAttribute("totalRevenue", orderService.getTotalRevenue());
+
+        model.addAttribute("pendingOrders", orderService.getPendingOrderCount());
+
         return "admin-products";
     }
 

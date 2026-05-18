@@ -78,4 +78,23 @@ public class OrderService {
 
         return customerOrderRepository.save(order);
     }
+    public long getTotalOrderCount() {
+        return customerOrderRepository.count();
+    }
+
+    public double getTotalRevenue() {
+
+        return customerOrderRepository.findAll()
+                .stream()
+                .mapToDouble(CustomerOrder::getTotalPrice)
+                .sum();
+    }
+
+    public long getPendingOrderCount() {
+
+        return customerOrderRepository.findAll()
+                .stream()
+                .filter(order -> order.getStatus() == OrderStatus.PENDING)
+                .count();
+    }
 }

@@ -123,6 +123,30 @@
             margin-left: 20px;
             font-size: 15px;
         }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #111827;
+            color: white;
+            padding: 20px;
+            border-radius: 14px;
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .stat-card p {
+            margin-top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -136,6 +160,29 @@
 </div>
 
 <div class="container">
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <h3>Toplam Ürün</h3>
+            <p th:text="${productCount}"></p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Toplam Sipariş</h3>
+            <p th:text="${orderCount}"></p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Toplam Ciro</h3>
+            <p th:text="${totalRevenue} + ' TL'"></p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Bekleyen Sipariş</h3>
+            <p th:text="${pendingOrders}"></p>
+        </div>
+
+    </div>
 
     <h1>Ürün Yönetimi</h1>
     <p class="subtitle">Menü ürünlerini buradan ekleyebilir ve silebilirsiniz.</p>
