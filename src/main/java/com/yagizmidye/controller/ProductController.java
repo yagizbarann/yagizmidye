@@ -1,7 +1,7 @@
 package com.yagizmidye.controller;
 
 import com.yagizmidye.entity.Product;
-import com.yagizmidye.repository.ProductRepository;
+import com.yagizmidye.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,19 +10,35 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @GetMapping
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return productService.getAllProducts();
+    }
+
+    @GetMapping("/{id}")
+    public Product getProductById(@PathVariable Long id) {
+        return productService.getProductById(id);
     }
 
     @PostMapping
     public Product addProduct(@RequestBody Product product) {
-        return productRepository.save(product);
+        return productService.addProduct(product);
+    }
+
+    @PutMapping("/{id}")
+    public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
+        return productService.updateProduct(id, product);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return "Product deleted successfully";
     }
 }
