@@ -5,6 +5,7 @@
     <title>Yağız Midye - Garson Paneli</title>
 
     <style>
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -21,7 +22,7 @@
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 40px auto;
             background: white;
             padding: 30px;
@@ -77,6 +78,38 @@
             font-weight: bold;
             color: #16a34a;
         }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-buttons button {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: 0.2s;
+        }
+
+        .preparing-btn {
+            background: #f59e0b;
+        }
+
+        .ready-btn {
+            background: #2563eb;
+        }
+
+        .served-btn {
+            background: #16a34a;
+        }
+
+        .action-buttons button:hover {
+            opacity: 0.85;
+        }
+
     </style>
 </head>
 
@@ -87,10 +120,15 @@
 </div>
 
 <div class="container">
+
     <h1>Garson Paneli</h1>
-    <p class="subtitle">Gelen siparişleri buradan takip edebilirsiniz.</p>
+
+    <p class="subtitle">
+        Gelen siparişleri buradan takip edebilirsiniz.
+    </p>
 
     <table>
+
         <thead>
         <tr>
             <th>Sipariş ID</th>
@@ -98,21 +136,74 @@
             <th>Masa</th>
             <th>Toplam Tutar</th>
             <th>Durum</th>
+            <th>İşlem</th>
         </tr>
         </thead>
 
         <tbody>
+
         <tr th:each="order : ${orders}">
+
             <td th:text="${order.id}"></td>
+
             <td th:text="${order.customerName}"></td>
+
             <td th:text="${order.tableNumber}"></td>
-            <td class="price" th:text="${order.totalPrice} + ' TL'"></td>
-            <td>
-                <span class="status" th:text="${order.status}"></span>
+
+            <td class="price"
+                th:text="${order.totalPrice} + ' TL'">
             </td>
+
+            <td>
+                <span class="status"
+                      th:text="${order.status}">
+                </span>
+            </td>
+
+            <td>
+
+                <form action="/waiter/orders/status"
+                      method="post"
+                      class="action-buttons">
+
+                    <input type="hidden"
+                           name="orderId"
+                           th:value="${order.id}">
+
+                    <button type="submit"
+                            name="status"
+                            value="PREPARING"
+                            class="preparing-btn">
+
+                        Hazırlanıyor
+                    </button>
+
+                    <button type="submit"
+                            name="status"
+                            value="READY"
+                            class="ready-btn">
+
+                        Hazır
+                    </button>
+
+                    <button type="submit"
+                            name="status"
+                            value="SERVED"
+                            class="served-btn">
+
+                        Teslim Edildi
+                    </button>
+
+                </form>
+
+            </td>
+
         </tr>
+
         </tbody>
+
     </table>
+
 </div>
 
 </body>
