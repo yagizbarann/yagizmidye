@@ -4,14 +4,21 @@ import com.yagizmidye.entity.Product;
 import com.yagizmidye.repository.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import com.yagizmidye.entity.AppUser;
+import com.yagizmidye.entity.Role;
+import com.yagizmidye.repository.AppUserRepository;
 
 @Configuration
 public class DataLoader implements CommandLineRunner {
 
     private final ProductRepository productRepository;
+    private final AppUserRepository appUserRepository;
 
-    public DataLoader(ProductRepository productRepository) {
+    public DataLoader(ProductRepository productRepository,
+                      AppUserRepository appUserRepository)
+    {
         this.productRepository = productRepository;
+        this.appUserRepository = appUserRepository;
     }
 
     @Override
@@ -57,6 +64,29 @@ public class DataLoader implements CommandLineRunner {
             productRepository.save(balikEkmek);
 
             System.out.println("Ürünler başarıyla eklendi.");
+        }
+        if (appUserRepository.count() == 0) {
+
+            AppUser admin = new AppUser(
+                    null,
+                    "System Admin",
+                    "admin",
+                    "12345",
+                    Role.ADMIN
+            );
+
+            AppUser waiter = new AppUser(
+                    null,
+                    "Garson User",
+                    "garson",
+                    "12345",
+                    Role.WAITER
+            );
+
+            appUserRepository.save(admin);
+            appUserRepository.save(waiter);
+
+            System.out.println("Kullanıcılar oluşturuldu.");
         }
     }
 }
