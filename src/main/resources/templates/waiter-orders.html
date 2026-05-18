@@ -149,6 +149,7 @@
             <th>Sipariş ID</th>
             <th>Müşteri</th>
             <th>Masa</th>
+            <th>Ürünler</th>
             <th>Toplam Tutar</th>
             <th>Durum</th>
             <th>İşlem</th>
@@ -164,6 +165,16 @@
             <td th:text="${order.customerName}"></td>
 
             <td th:text="${order.tableNumber}"></td>
+            <td>
+
+                <div th:each="item : ${order.orderItems}">
+
+                    <b th:text="${item.quantity}"></b>x
+                    <span th:text="${item.product.name}"></span>
+
+                </div>
+
+            </td>
 
             <td class="price"
                 th:text="${order.totalPrice} + ' TL'">
