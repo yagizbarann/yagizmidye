@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yağız Midye - Müşteri Menüsü</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 40px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .customer-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        input {
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 20px;
+            background: #f9fafb;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        .description {
+            color: #6b7280;
+            min-height: 40px;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #16a34a;
+            margin: 12px 0;
+        }
+
+        .quantity {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .submit-btn {
+            margin-top: 25px;
+            width: 100%;
+            border: none;
+            background: #f59e0b;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <span>Yağız Midye</span>
+    <a href="/admin/products">Admin Paneli</a>
+    <a href="/waiter/orders">Garson Paneli</a>
+</div>
+
+<div class="container">
+
+    <h1>Müşteri Menüsü</h1>
+    <p class="subtitle">Sipariş vermek için bilgilerinizi girip ürün adetlerini seçin.</p>
+
+    <form id="orderForm">
+
+        <div class="customer-info">
+            <input type="text" id="customerName" placeholder="Adınız" required>
+            <input type="text" id="tableNumber" placeholder="Masa No" required>
+        </div>
+
+        <div class="product-grid">
+
+            <div class="card" th:each="product : ${products}">
+                <h3 th:text="${product.name}"></h3>
+
+                <p class="description" th:text="${product.description}"></p>
+
+                <p class="price" th:text="${product.price} + ' TL'"></p>
+
+                <input
+                        type="number"
+                        class="quantity"
+                        min="0"
+                        value="0"
+                        th:attr="data-product-id=${product.id}">
+            </div>
+
+        </div>
+
+        <button type="submit" class="submit-btn">
+            Siparişi Gönder
+        </button>
+
+    </form>
+
+</div>
+
+<script>
+    document.getElementById("orderForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const customerName = document.getElementById("customerName").value;
+        const tableNumber = document.getElementById("tableNumber").value;
+
+        const items = [];
+
+        document.querySelectorAll(".quantity").forEach(input => {
+            const quantity = parseInt(input.value);
+            const productId = parseInt(input.getAttribute("data-product-id"));
+
+            if (quantity > 0) {
+                items.push({
+                    productId: productId,
+                    quantity: quantity
+                });
+            }
+        });
+
+        if (items.length === 0) {
+            alert("Lütfen en az bir ürün seçin.");
+            return;
+        }
+
+        fetch("/api/orders", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                customerName: customerName,
+                tableNumber: tableNumber,
+                items: items
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Sipariş oluşturulamadı.");
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert("Sipariş başarıyla oluşturuldu. Sipariş No: " + data.id);
+                window.location.reload();
+            })
+            .catch(error => {
+                alert("Hata oluştu: " + error.message);
+            });
+    });
+</script>
+
+</body>
+</html>
