@@ -147,6 +147,11 @@
             font-size: 28px;
             font-weight: bold;
         }
+        select {
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+        }
     </style>
 </head>
 
@@ -221,17 +226,36 @@
 
         <tbody>
         <tr th:each="product : ${products}">
-            <td th:text="${product.id}"></td>
-            <td th:text="${product.name}"></td>
-            <td th:text="${product.description}"></td>
-            <td class="price" th:text="${product.price} + ' TL'"></td>
-            <td>
-                <span class="active" th:text="${product.active ? 'Aktif' : 'Pasif'}"></span>
-            </td>
-            <td>
-                <form th:action="@{/admin/products/delete/{id}(id=${product.id})}" method="post">
-                    <button type="submit" class="delete-btn">Sil</button>
-                </form>
+            <form th:action="@{/admin/products/update/{id}(id=${product.id})}" method="post">
+
+                <td th:text="${product.id}"></td>
+
+                <td>
+                    <input type="text" name="name" th:value="${product.name}" required>
+                </td>
+
+                <td>
+                    <input type="text" name="description" th:value="${product.description}" required>
+                </td>
+
+                <td>
+                    <input type="number" name="price" th:value="${product.price}" step="0.01" required>
+                </td>
+
+                <td>
+                    <select name="active">
+                        <option value="true" th:selected="${product.active == true}">Aktif</option>
+                        <option value="false" th:selected="${product.active == false}">Pasif</option>
+                    </select>
+                </td>
+
+                <td>
+                    <button type="submit" class="add-btn">Güncelle</button>
+            </form>
+
+            <form th:action="@{/admin/products/delete/{id}(id=${product.id})}" method="post" style="display:inline;">
+                <button type="submit" class="delete-btn">Sil</button>
+            </form>
             </td>
         </tr>
         </tbody>
