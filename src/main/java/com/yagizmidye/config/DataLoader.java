@@ -51,6 +51,46 @@ public class DataLoader implements CommandLineRunner {
             productRepository.save(new Product(null, "Hamsi Balık Ekmek", "Hızlı ve pratik karadeniz hamsisinden balık ekmek", 160.0, true, "Balık Ekmek", "/images/products/hamsi-balik.jpeg"));
             productRepository.save(new Product(null, "Mezgit Balık Ekmek", "Halkın gurme lezzeti mezgit balık ekmek", 255.0, true, "Balık Ekmek", "/images/products/mezgit-balik.jpeg"));
 
+            productRepository.save(new Product(
+                    null,
+                    "Kola",
+                    "Soğuk kola",
+                    40.0,
+                    true,
+                    "İçecekler",
+                    "/images/products/kola.jpeg"
+            ));
+
+            productRepository.save(new Product(
+                    null,
+                    "Ayran",
+                    "Soğuk yayık ayran",
+                    25.0,
+                    true,
+                    "İçecekler",
+                    "/images/products/ayran.jpeg"
+            ));
+
+            productRepository.save(new Product(
+                    null,
+                    "Şalgam",
+                    "Acılı şalgam suyu",
+                    30.0,
+                    true,
+                    "İçecekler",
+                    "/images/products/salgam.jpeg"
+            ));
+
+            productRepository.save(new Product(
+                    null,
+                    "Soda",
+                    "Limonlu soda",
+                    20.0,
+                    true,
+                    "İçecekler",
+                    "/images/products/soda.jpeg"
+            ));
+
             System.out.println("Ürün çeşitleri başarıyla eklendi.");
         }
 

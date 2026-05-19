@@ -212,6 +212,14 @@
             margin-top: 6px;
             font-size: 13px;
         }
+        .order-type {
+            background: #ede9fe;
+            color: #5b21b6;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -268,7 +276,8 @@
         <tr>
             <th>Sipariş ID</th>
             <th>Müşteri</th>
-            <th>Masa</th>
+            <th>Sipariş Tipi</th>
+            <th>Masa / Adres</th>
             <th>Ürünler</th>
             <th>Toplam Tutar</th>
             <th>Durum</th>
@@ -283,7 +292,24 @@
 
             <td th:text="${order.customerName}"></td>
 
-            <td th:text="${order.tableNumber}"></td>
+            <td>
+    <span class="order-type"
+          th:text="${order.orderType.name() == 'ONLINE'} ? 'Online' : 'Masada'">
+    </span>
+            </td>
+
+            <td>
+                <div th:if="${order.orderType.name() == 'TABLE'}">
+                    Masa <span th:text="${order.tableNumber}"></span>
+                </div>
+
+                <div th:if="${order.orderType.name() == 'ONLINE'}">
+                    <b>Adres:</b> <span th:text="${order.address}"></span><br>
+                    <b>Tel:</b> <span th:text="${order.phone}"></span><br>
+                    <b>Ödeme:</b> <span th:text="${order.paymentMethod}"></span><br>
+                    <b>Not:</b> <span th:text="${order.note}"></span>
+                </div>
+            </td>
 
             <td>
                 <div th:each="item : ${order.orderItems}">

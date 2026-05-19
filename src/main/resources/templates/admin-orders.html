@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yağız Midye - Sipariş Geçmişi</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 40px;
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        thead {
+            background: #f59e0b;
+            color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .status {
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .preparing {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .ready {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .served {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #16a34a;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+
+    <span>Yağız Midye - Sipariş Geçmişi</span>
+
+    <div class="navbar-right">
+        <a href="/admin/products">Ürün Yönetimi</a>
+        <a href="/logout">Çıkış</a>
+    </div>
+
+</div>
+
+<div class="container">
+
+    <h1>Tüm Siparişler</h1>
+
+    <p class="subtitle">
+        Sistemdeki tüm siparişleri buradan takip edebilirsiniz.
+    </p>
+
+    <table>
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Müşteri</th>
+            <th>Sipariş Tipi</th>
+            <th>Masa / Adres</th>
+            <th>Ürünler</th>
+            <th>Toplam</th>
+            <th>Durum</th>
+            <th>Tarih</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="order : ${orders}">
+
+            <td th:text="${order.id}"></td>
+
+            <td th:text="${order.customerName}"></td>
+
+            <td>
+                <span th:text="${order.orderType.name() == 'ONLINE'} ? 'Online' : 'Masada'"></span>
+            </td>
+
+            <td>
+                <div th:if="${order.orderType.name() == 'TABLE'}">
+                    Masa <span th:text="${order.tableNumber}"></span>
+                </div>
+
+                <div th:if="${order.orderType.name() == 'ONLINE'}">
+                    <b>Adres:</b> <span th:text="${order.address}"></span><br>
+                    <b>Tel:</b> <span th:text="${order.phone}"></span><br>
+                    <b>Ödeme:</b> <span th:text="${order.paymentMethod}"></span><br>
+                    <b>Not:</b> <span th:text="${order.note}"></span>
+                </div>
+            </td>
+
+            <td>
+                <div th:each="item : ${order.orderItems}">
+                    <b th:text="${item.quantity}"></b>x
+                    <span th:text="${item.product.name}"></span>
+                </div>
+            </td>
+
+            <td class="price"
+                th:text="${order.totalPrice} + ' TL'">
+            </td>
+
+            <td>
+
+                <span
+                        class="status"
+
+                        th:classappend="
+                            ${order.status.name() == 'PENDING'} ? ' pending' :
+                            (${order.status.name() == 'PREPARING'} ? ' preparing' :
+                            (${order.status.name() == 'READY'} ? ' ready' :
+                            (${order.status.name() == 'SERVED'} ? ' served' :
+                            (${order.status.name() == 'CANCELLED'} ? ' cancelled' : ''))))
+                        "
+
+                        th:text="
+                            ${order.status.name() == 'PENDING'} ? 'Bekliyor' :
+                            (${order.status.name() == 'PREPARING'} ? 'Hazırlanıyor' :
+                            (${order.status.name() == 'READY'} ? 'Hazır' :
+                            (${order.status.name() == 'SERVED'} ? 'Teslim Edildi' :
+                            (${order.status.name() == 'CANCELLED'} ? 'İptal Edildi' : ''))))
+                        ">
+                </span>
+
+            </td>
+
+            <td th:text="${#temporals.format(order.createdDate, 'dd.MM.yyyy HH:mm')}"></td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>

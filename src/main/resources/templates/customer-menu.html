@@ -31,10 +31,6 @@
             font-weight: bold;
         }
 
-        .nav-links a:hover {
-            color: #f59e0b;
-        }
-
         .container {
             max-width: 1150px;
             margin: 40px auto;
@@ -54,18 +50,53 @@
             margin-bottom: 25px;
         }
 
+        input, select {
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .search-input,
+        .filter-select {
+            margin-bottom: 25px;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
         .customer-info {
             display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .online-fields {
+            display: none;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
             margin-bottom: 25px;
         }
 
-        input {
-            padding: 13px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 15px;
+        .online-fields .full {
+            grid-column: span 2;
+        }
+
+        .card-fields {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .card-fields.full {
+            grid-column: span 2;
         }
 
         .menu-layout {
@@ -152,7 +183,6 @@
 
         .quantity {
             width: 100%;
-            box-sizing: border-box;
         }
 
         .cart-summary {
@@ -176,10 +206,6 @@
             padding: 10px 0;
             border-bottom: 1px solid #fed7aa;
             font-size: 14px;
-        }
-
-        .cart-row span {
-            color: #374151;
         }
 
         .cart-row strong {
@@ -213,39 +239,22 @@
             cursor: pointer;
         }
 
-        .submit-btn:hover {
-            opacity: 0.9;
-        }
-
         @media (max-width: 900px) {
-            .menu-layout {
+            .menu-layout,
+            .customer-info,
+            .online-fields,
+            .card-fields {
                 grid-template-columns: 1fr;
+            }
+
+            .online-fields .full,
+            .card-fields.full {
+                grid-column: span 1;
             }
 
             .cart-summary {
                 position: static;
             }
-
-            .customer-info {
-                grid-template-columns: 1fr;
-            }
-        }
-        .search-input {
-            width: 100%;
-            margin-bottom: 25px;
-            padding: 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 16px;
-        }
-        .filter-select {
-            width: 100%;
-            margin-bottom: 25px;
-            padding: 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 16px;
-            background: white;
         }
     </style>
 </head>
@@ -263,31 +272,58 @@
 <div class="container">
 
     <h1>Müşteri Menüsü</h1>
-    <p class="subtitle">Ana ürüne tıklayın, çeşitlerden adet seçip siparişinizi gönderin.</p>
+    <p class="subtitle">Masada veya online sipariş verebilirsiniz.</p>
+
     <input
             type="text"
             id="productSearch"
             class="search-input"
             placeholder="Ürün ara... Örn: midye, kokoreç, hamsi">
+
     <select id="categoryFilter" class="filter-select">
-
         <option value="all">Tüm Kategoriler</option>
-
         <option value="Midye Dolma">Midye Dolma</option>
-
         <option value="Kokoreç">Kokoreç</option>
-
         <option value="Çiğköfte">Çiğköfte</option>
-
         <option value="Balık Ekmek">Balık Ekmek</option>
-
+        <option value="İçecekler">İçecekler</option>
     </select>
 
     <form id="orderForm">
 
         <div class="customer-info">
+            <select id="orderType" onchange="toggleOrderTypeFields()">
+                <option value="TABLE">Masada Sipariş</option>
+                <option value="ONLINE">Online Sipariş</option>
+            </select>
+
             <input type="text" id="customerName" placeholder="Adınız" required>
+
             <input type="text" id="tableNumber" placeholder="Masa No" required>
+        </div>
+
+        <div id="onlineFields" class="online-fields">
+            <input type="text" id="phone" placeholder="Telefon">
+
+            <select id="paymentMethod" onchange="togglePaymentFields()">
+                <option value="Kapıda Nakit">Kapıda Nakit</option>
+                <option value="Kapıda Kart">Kapıda Kart</option>
+                <option value="Online Ödeme">Online Ödeme</option>
+            </select>
+
+            <input type="text" id="address" class="full" placeholder="Adres">
+
+            <input type="text" id="note" class="full" placeholder="Sipariş Notu">
+
+            <div id="cardFields" class="card-fields full">
+                <input type="text" id="cardName" placeholder="Kart Üzerindeki İsim">
+
+                <input type="text" id="cardNumber" placeholder="Kart Numarası">
+
+                <input type="text" id="cardExpiry" placeholder="Son Kullanma Tarihi Örn: 12/28">
+
+                <input type="text" id="cardCvv" placeholder="CVV">
+            </div>
         </div>
 
         <div class="menu-layout">
@@ -356,11 +392,67 @@
 </div>
 
 <script>
-    function toggleCategory(header) {
+    function toggleOrderTypeFields() {
+        const orderType = document.getElementById("orderType").value;
+        const onlineFields = document.getElementById("onlineFields");
+        const tableNumber = document.getElementById("tableNumber");
+        const phone = document.getElementById("phone");
+        const address = document.getElementById("address");
 
+        if (orderType === "ONLINE") {
+            onlineFields.style.display = "grid";
+            tableNumber.style.display = "none";
+            tableNumber.required = false;
+            tableNumber.value = "";
+
+            phone.required = true;
+            address.required = true;
+        } else {
+            onlineFields.style.display = "none";
+            tableNumber.style.display = "block";
+            tableNumber.required = true;
+
+            phone.required = false;
+            address.required = false;
+        }
+
+        togglePaymentFields();
+    }
+
+    function togglePaymentFields() {
+        const paymentMethod = document.getElementById("paymentMethod").value;
+        const cardFields = document.getElementById("cardFields");
+
+        const cardName = document.getElementById("cardName");
+        const cardNumber = document.getElementById("cardNumber");
+        const cardExpiry = document.getElementById("cardExpiry");
+        const cardCvv = document.getElementById("cardCvv");
+
+        if (paymentMethod === "Online Ödeme") {
+            cardFields.style.display = "grid";
+
+            cardName.required = true;
+            cardNumber.required = true;
+            cardExpiry.required = true;
+            cardCvv.required = true;
+        } else {
+            cardFields.style.display = "none";
+
+            cardName.required = false;
+            cardNumber.required = false;
+            cardExpiry.required = false;
+            cardCvv.required = false;
+
+            cardName.value = "";
+            cardNumber.value = "";
+            cardExpiry.value = "";
+            cardCvv.value = "";
+        }
+    }
+
+    function toggleCategory(header) {
         const selectedList = header.nextElementSibling;
         const selectedArrow = header.querySelector(".arrow");
-
         const isOpen = selectedList.style.display === "block";
 
         document.querySelectorAll(".product-list").forEach(list => {
@@ -402,11 +494,9 @@
         const cartList = document.getElementById("cartList");
         const cartTotal = document.getElementById("cartTotal");
 
-        if (cartItems.length === 0) {
-            cartList.innerHTML = "<p class='empty-cart'>Sepetiniz boş.</p>";
-        } else {
-            cartList.innerHTML = cartItems.join("");
-        }
+        cartList.innerHTML = cartItems.length === 0
+            ? "<p class='empty-cart'>Sepetiniz boş.</p>"
+            : cartItems.join("");
 
         cartTotal.textContent = total.toFixed(2) + " TL";
     }
@@ -418,6 +508,7 @@
     document.getElementById("orderForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
+        const orderType = document.getElementById("orderType").value;
         const customerName = document.getElementById("customerName").value;
         const tableNumber = document.getElementById("tableNumber").value;
 
@@ -440,6 +531,35 @@
             return;
         }
 
+        if (orderType === "ONLINE") {
+            const phone = document.getElementById("phone").value;
+            const address = document.getElementById("address").value;
+
+            if (phone.trim() === "" || address.trim() === "") {
+                alert("Online sipariş için telefon ve adres zorunludur.");
+                return;
+            }
+
+            if (document.getElementById("paymentMethod").value === "Online Ödeme") {
+                const cardName = document.getElementById("cardName").value;
+                const cardNumber = document.getElementById("cardNumber").value;
+                const cardExpiry = document.getElementById("cardExpiry").value;
+                const cardCvv = document.getElementById("cardCvv").value;
+
+                if (
+                    cardName.trim() === "" ||
+                    cardNumber.trim() === "" ||
+                    cardExpiry.trim() === "" ||
+                    cardCvv.trim() === ""
+                ) {
+                    alert("Demo online ödeme için kart bilgilerini doldurun.");
+                    return;
+                }
+
+                alert("Demo ödeme başarıyla alındı.");
+            }
+        }
+
         fetch("/api/orders", {
             method: "POST",
             headers: {
@@ -448,6 +568,11 @@
             body: JSON.stringify({
                 customerName: customerName,
                 tableNumber: tableNumber,
+                orderType: orderType,
+                phone: document.getElementById("phone").value,
+                address: document.getElementById("address").value,
+                note: document.getElementById("note").value,
+                paymentMethod: document.getElementById("paymentMethod").value,
                 items: items
             })
         })
@@ -464,6 +589,7 @@
                 alert("Hata oluştu: " + error.message);
             });
     });
+
     document.getElementById("productSearch").addEventListener("input", function () {
         const searchText = this.value.toLowerCase();
 
@@ -501,50 +627,37 @@
             }
         });
     });
-    document.getElementById("categoryFilter").addEventListener("change", function () {
 
+    document.getElementById("categoryFilter").addEventListener("change", function () {
         const selectedCategory = this.value;
 
         document.querySelectorAll(".category-card").forEach(categoryCard => {
-
-            const categoryName = categoryCard
-                .querySelector("h3")
-                .textContent
-                .trim();
-
+            const categoryName = categoryCard.querySelector("h3").textContent.trim();
             const productList = categoryCard.querySelector(".product-list");
             const arrow = categoryCard.querySelector(".arrow");
 
             if (selectedCategory === "all") {
-
                 categoryCard.style.display = "block";
-
                 productList.style.display = "none";
-
                 arrow.textContent = "+";
 
                 categoryCard.querySelectorAll(".product-item").forEach(productItem => {
                     productItem.style.display = "block";
                 });
-
             } else {
-
                 if (categoryName === selectedCategory) {
-
                     categoryCard.style.display = "block";
-
                     productList.style.display = "block";
-
                     arrow.textContent = "-";
-
                 } else {
-
                     categoryCard.style.display = "none";
                 }
             }
         });
     });
 
+    toggleOrderTypeFields();
+    togglePaymentFields();
     updateCartSummary();
 </script>
 

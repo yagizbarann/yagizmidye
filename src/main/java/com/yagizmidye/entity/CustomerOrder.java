@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -22,6 +23,17 @@ public class CustomerOrder {
     private String customerName;
 
     private String tableNumber;
+
+    @Enumerated(EnumType.STRING)
+    private OrderType orderType;
+
+    private String phone;
+
+    private String address;
+
+    private String note;
+
+    private String paymentMethod;
 
     private Double totalPrice;
 

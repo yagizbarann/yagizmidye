@@ -12,4 +12,14 @@ public class CreateOrderRequest {
     private String tableNumber;
 
     private List<OrderItemRequest> items;
+
+    private String orderType;
+
+    private String phone;
+
+    private String address;
+
+    private String note;
+
+    private String paymentMethod;
 }

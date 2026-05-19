@@ -13,6 +13,7 @@ import java.util.List;
 import com.yagizmidye.repository.RestaurantTableRepository;
 import com.yagizmidye.entity.RestaurantTable;
 
+
 @Service
 public class OrderService {
 
@@ -40,11 +41,23 @@ public class OrderService {
         order.setTableNumber(request.getTableNumber());
         order.setCreatedDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
-        RestaurantTable table = restaurantTableRepository.findByTableNumber(request.getTableNumber())
-                .orElseThrow(() -> new RuntimeException("Table not found"));
 
-        table.setStatus(TableStatus.OCCUPIED);
-        restaurantTableRepository.save(table);
+        OrderType orderType = OrderType.valueOf(request.getOrderType());
+
+        order.setOrderType(orderType);
+        order.setPhone(request.getPhone());
+        order.setAddress(request.getAddress());
+        order.setNote(request.getNote());
+        order.setPaymentMethod(request.getPaymentMethod());
+
+        if (orderType == OrderType.TABLE) {
+
+            RestaurantTable table = restaurantTableRepository.findByTableNumber(request.getTableNumber())
+                    .orElseThrow(() -> new RuntimeException("Table not found"));
+
+            table.setStatus(TableStatus.OCCUPIED);
+            restaurantTableRepository.save(table);
+        }
 
         List<OrderItem> orderItems = new ArrayList<>();
 
@@ -89,7 +102,9 @@ public class OrderService {
         CustomerOrder order = getOrderById(id);
 
         order.setStatus(status);
-        if (status == OrderStatus.SERVED || status == OrderStatus.CANCELLED) {
+        if ((status == OrderStatus.SERVED || status == OrderStatus.CANCELLED)
+                && order.getOrderType() == OrderType.TABLE) {
+
             RestaurantTable table = restaurantTableRepository.findByTableNumber(order.getTableNumber())
                     .orElseThrow(() -> new RuntimeException("Table not found"));
 

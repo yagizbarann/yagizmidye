@@ -98,4 +98,12 @@ public class AdminPageController {
 
         return "/uploads/" + fileName;
     }
+    @GetMapping("/admin/orders")
+    public String adminOrdersPage(Model model) {
+
+        model.addAttribute("orders", orderService.getAllOrders());
+
+        return "admin-orders";
+    }
+
 }
