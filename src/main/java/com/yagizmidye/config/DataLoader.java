@@ -1,12 +1,12 @@
 package com.yagizmidye.config;
 
+import com.yagizmidye.entity.AppUser;
 import com.yagizmidye.entity.Product;
+import com.yagizmidye.entity.Role;
+import com.yagizmidye.repository.AppUserRepository;
 import com.yagizmidye.repository.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import com.yagizmidye.entity.AppUser;
-import com.yagizmidye.entity.Role;
-import com.yagizmidye.repository.AppUserRepository;
 
 @Configuration
 public class DataLoader implements CommandLineRunner {
@@ -15,56 +15,39 @@ public class DataLoader implements CommandLineRunner {
     private final AppUserRepository appUserRepository;
 
     public DataLoader(ProductRepository productRepository,
-                      AppUserRepository appUserRepository)
-    {
+                      AppUserRepository appUserRepository) {
         this.productRepository = productRepository;
         this.appUserRepository = appUserRepository;
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
         if (productRepository.count() == 0) {
 
-            Product midye = new Product(
-                    null,
-                    "Midye Dolma",
-                    "Özel soslu midye dolma",
-                    25.0,
-                    true
-            );
+            productRepository.save(new Product(null, "Klasik Midye Dolma", "Özel soslu klasik midye dolma", 25.0, true, "Midye Dolma", "/images/products/klasik-midye.jpeg"));
+            productRepository.save(new Product(null, "Köri Soslu Midye", "Köri aromalı özel midye dolma", 30.0, true, "Midye Dolma", "/images/products/kori-soslu-midye.jpeg"));
+            productRepository.save(new Product(null, "Acılı Midye Dolma", "Acı sevenlere özel midye dolma", 28.0, true, "Midye Dolma", "/images/products/acili-midye.jpeg"));
+            productRepository.save(new Product(null, "Beşamel Soslu Midye", "Beşamel soslu lezzetli midye", 30.0, true, "Midye Dolma", "/images/products/besamel-soslu-midye.jpeg"));
 
-            Product kokorec = new Product(
-                    null,
-                    "Kokoreç",
-                    "Baharatlı tam ekmek kokoreç",
-                    120.0,
-                    true
-            );
+            productRepository.save(new Product(null, "Çeyrek Kokoreç", "Bol baharatlı çeyrek kokoreç", 75.0, true, "Kokoreç", "/images/products/ceyrek-kokorec.jpeg"));
+            productRepository.save(new Product(null, "Yarım Kokoreç", "Baharatlı yarım ekmek kokoreç", 120.0, true, "Kokoreç", "/images/products/yarim-kokorec.jpeg"));
+            productRepository.save(new Product(null, "Tam Ekmek Kokoreç", "Doyurucu tam ekmek kokoreç", 180.0, true, "Kokoreç", "/images/products/tam-ekmek-kokorec.jpeg"));
+            productRepository.save(new Product(null, "Acılı Kokoreç", "Acılı baharatlı kokoreç", 130.0, true, "Kokoreç", "/images/products/acili-kokorec.jpeg"));
 
-            Product cigkofte = new Product(
-                    null,
-                    "Çiğköfte",
-                    "Acılı etsiz çiğköfte",
-                    80.0,
-                    true
-            );
+            productRepository.save(new Product(null, "Çiğköfte Dürüm", "Acılı etsiz çiğköfte dürüm", 60.0, true, "Çiğköfte", "/images/products/cigkofte-durum.jpeg"));
+            productRepository.save(new Product(null, "Çiğköfte Porsiyon", "Bol yeşillikli çiğköfte porsiyon", 90.0, true, "Çiğköfte", "/images/products/cigkofte-porsiyon.jpeg"));
+            productRepository.save(new Product(null, "Mega Çiğköfte Dürüm", "Daha büyük ve doyurucu çiğköfte dürüm", 85.0, true, "Çiğköfte", "/images/products/mega-cigkofte-durum.jpeg"));
+            productRepository.save(new Product(null, "Aile Boyu Çiğköfte", "Kalabalık sofralar için aile boyu", 180.0, true, "Çiğköfte", "/images/products/aile-boyu-cigkofte.jpeg"));
 
-            Product balikEkmek = new Product(
-                    null,
-                    "Balık Ekmek",
-                    "Izgara balık ekmek",
-                    150.0,
-                    true
-            );
+            productRepository.save(new Product(null, "Uskumru Balık Ekmek", "Besleyici ve doyurucu uskumrudan balık ekmek", 250.0, true, "Balık Ekmek", "/images/products/uskumru-balik.jpeg"));
+            productRepository.save(new Product(null, "Sardalya Balık Ekmek", "Denizin favori balığı sardalyadan balık ekmek", 220.0, true, "Balık Ekmek", "/images/products/sardalya-balik.jpeg"));
+            productRepository.save(new Product(null, "Hamsi Balık Ekmek", "Hızlı ve pratik karadeniz hamsisinden balık ekmek", 160.0, true, "Balık Ekmek", "/images/products/hamsi-balik.jpeg"));
+            productRepository.save(new Product(null, "Mezgit Balık Ekmek", "Halkın gurme lezzeti mezgit balık ekmek", 255.0, true, "Balık Ekmek", "/images/products/mezgit-balik.jpeg"));
 
-            productRepository.save(midye);
-            productRepository.save(kokorec);
-            productRepository.save(cigkofte);
-            productRepository.save(balikEkmek);
-
-            System.out.println("Ürünler başarıyla eklendi.");
+            System.out.println("Ürün çeşitleri başarıyla eklendi.");
         }
+
         if (appUserRepository.count() == 0) {
 
             AppUser admin = new AppUser(

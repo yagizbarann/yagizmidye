@@ -22,4 +22,8 @@ public class Product {
     private Double price;
 
     private Boolean active;
+
+    private String category;
+
+    private String imageUrl;
 }

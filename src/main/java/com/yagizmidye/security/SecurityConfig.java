@@ -18,6 +18,7 @@ public class SecurityConfig {
                         .requestMatchers("/waiter/**").hasRole("WAITER")
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form

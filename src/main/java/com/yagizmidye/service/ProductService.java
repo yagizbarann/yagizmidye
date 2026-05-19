@@ -35,6 +35,8 @@ public class ProductService {
         product.setDescription(newProduct.getDescription());
         product.setPrice(newProduct.getPrice());
         product.setActive(newProduct.getActive());
+        product.setCategory(newProduct.getCategory());
+        product.setImageUrl(newProduct.getImageUrl());
 
         return productRepository.save(product);
     }

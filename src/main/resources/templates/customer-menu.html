@@ -18,6 +18,21 @@
             padding: 18px 40px;
             font-size: 22px;
             font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            color: #f59e0b;
         }
 
         .container {
@@ -53,38 +68,136 @@
             font-size: 15px;
         }
 
-        .product-grid {
+        .menu-layout {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            grid-template-columns: 1fr 330px;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 18px;
+            align-items: flex-start;
         }
 
-        .card {
+        .category-card {
             border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 20px;
+            border-radius: 16px;
             background: #f9fafb;
+            overflow: hidden;
+            align-self: start;
         }
 
-        .card h3 {
-            margin-top: 0;
+        .category-header {
+            padding: 22px;
+            cursor: pointer;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-header h3 {
+            margin: 0;
+            color: #111827;
+        }
+
+        .arrow {
+            font-size: 20px;
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .product-list {
+            display: none;
+            padding: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .product-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background: #e5e7eb;
+        }
+
+        .product-item h4 {
+            margin: 0 0 6px;
             color: #111827;
         }
 
         .description {
             color: #6b7280;
-            min-height: 40px;
+            font-size: 14px;
+            margin: 0 0 10px;
         }
 
         .price {
             font-weight: bold;
             color: #16a34a;
-            margin: 12px 0;
+            margin-bottom: 10px;
         }
 
         .quantity {
             width: 100%;
             box-sizing: border-box;
+        }
+
+        .cart-summary {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            padding: 20px;
+            border-radius: 16px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .cart-summary h2 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        .cart-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #fed7aa;
+            font-size: 14px;
+        }
+
+        .cart-row span {
+            color: #374151;
+        }
+
+        .cart-row strong {
+            color: #16a34a;
+            white-space: nowrap;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 18px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .empty-cart {
+            color: #6b7280;
+            margin: 0;
         }
 
         .submit-btn {
@@ -103,33 +216,19 @@
         .submit-btn:hover {
             opacity: 0.9;
         }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
 
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-size: 15px;
-        }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        @media (max-width: 900px) {
+            .menu-layout {
+                grid-template-columns: 1fr;
+            }
 
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            margin-left: 18px;
-            font-weight: bold;
-        }
+            .cart-summary {
+                position: static;
+            }
 
-        .nav-links a:hover {
-            color: #f59e0b;
+            .customer-info {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -147,7 +246,7 @@
 <div class="container">
 
     <h1>Müşteri Menüsü</h1>
-    <p class="subtitle">Sipariş vermek için bilgilerinizi girip ürün adetlerini seçin.</p>
+    <p class="subtitle">Ana ürüne tıklayın, çeşitlerden adet seçip siparişinizi gönderin.</p>
 
     <form id="orderForm">
 
@@ -156,21 +255,59 @@
             <input type="text" id="tableNumber" placeholder="Masa No" required>
         </div>
 
-        <div class="product-grid">
+        <div class="menu-layout">
 
-            <div class="card" th:each="product : ${products}">
-                <h3 th:text="${product.name}"></h3>
+            <div class="category-grid">
 
-                <p class="description" th:text="${product.description}"></p>
+                <div class="category-card" th:each="categoryEntry : ${groupedProducts}">
 
-                <p class="price" th:text="${product.price} + ' TL'"></p>
+                    <div class="category-header" onclick="toggleCategory(this)">
+                        <h3 th:text="${categoryEntry.key}"></h3>
+                        <span class="arrow">+</span>
+                    </div>
 
-                <input
-                        type="number"
-                        class="quantity"
-                        min="0"
-                        value="0"
-                        th:attr="data-product-id=${product.id}">
+                    <div class="product-list">
+
+                        <div class="product-item" th:each="product : ${categoryEntry.value}">
+
+                            <img class="product-image"
+                                 th:if="${product.imageUrl != null and product.imageUrl != ''}"
+                                 th:src="${product.imageUrl}"
+                                 th:alt="${product.name}">
+
+                            <h4 th:text="${product.name}"></h4>
+
+                            <p class="description" th:text="${product.description}"></p>
+
+                            <div class="price" th:text="${product.price} + ' TL'"></div>
+
+                            <input
+                                    type="number"
+                                    class="quantity"
+                                    min="0"
+                                    value="0"
+                                    th:attr="data-product-id=${product.id},
+                                             data-product-name=${product.name},
+                                             data-product-price=${product.price}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="cart-summary">
+                <h2>Sepet Özeti</h2>
+
+                <div id="cartList">
+                    <p class="empty-cart">Sepetiniz boş.</p>
+                </div>
+
+                <div class="cart-total">
+                    <span>Toplam:</span>
+                    <strong id="cartTotal">0.00 TL</strong>
+                </div>
             </div>
 
         </div>
@@ -184,6 +321,65 @@
 </div>
 
 <script>
+    function toggleCategory(header) {
+
+        const selectedList = header.nextElementSibling;
+        const selectedArrow = header.querySelector(".arrow");
+
+        const isOpen = selectedList.style.display === "block";
+
+        document.querySelectorAll(".product-list").forEach(list => {
+            list.style.display = "none";
+        });
+
+        document.querySelectorAll(".arrow").forEach(arrow => {
+            arrow.textContent = "+";
+        });
+
+        if (!isOpen) {
+            selectedList.style.display = "block";
+            selectedArrow.textContent = "-";
+        }
+    }
+
+    function updateCartSummary() {
+        const cartItems = [];
+        let total = 0;
+
+        document.querySelectorAll(".quantity").forEach(input => {
+            const quantity = parseInt(input.value) || 0;
+            const productName = input.getAttribute("data-product-name");
+            const productPrice = parseFloat(input.getAttribute("data-product-price")) || 0;
+
+            if (quantity > 0) {
+                const subtotal = quantity * productPrice;
+                total += subtotal;
+
+                cartItems.push(`
+                    <div class="cart-row">
+                        <span>${quantity}x ${productName}</span>
+                        <strong>${subtotal.toFixed(2)} TL</strong>
+                    </div>
+                `);
+            }
+        });
+
+        const cartList = document.getElementById("cartList");
+        const cartTotal = document.getElementById("cartTotal");
+
+        if (cartItems.length === 0) {
+            cartList.innerHTML = "<p class='empty-cart'>Sepetiniz boş.</p>";
+        } else {
+            cartList.innerHTML = cartItems.join("");
+        }
+
+        cartTotal.textContent = total.toFixed(2) + " TL";
+    }
+
+    document.querySelectorAll(".quantity").forEach(input => {
+        input.addEventListener("input", updateCartSummary);
+    });
+
     document.getElementById("orderForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
@@ -193,7 +389,7 @@
         const items = [];
 
         document.querySelectorAll(".quantity").forEach(input => {
-            const quantity = parseInt(input.value);
+            const quantity = parseInt(input.value) || 0;
             const productId = parseInt(input.getAttribute("data-product-id"));
 
             if (quantity > 0) {
@@ -233,6 +429,8 @@
                 alert("Hata oluştu: " + error.message);
             });
     });
+
+    updateCartSummary();
 </script>
 
 </body>
