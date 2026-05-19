@@ -46,4 +46,7 @@ public class ProductService {
     public long getProductCount() {
         return productRepository.count();
     }
+    public List<Product> getActiveProducts() {
+        return productRepository.findByActiveTrue();
+    }
 }

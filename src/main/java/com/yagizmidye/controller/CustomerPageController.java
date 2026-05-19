@@ -16,7 +16,7 @@ public class CustomerPageController {
 
     @GetMapping("/customer/menu")
     public String customerMenuPage(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
+        model.addAttribute("products", productService.getActiveProducts());
         return "customer-menu";
     }
     @GetMapping("/customer/success")
