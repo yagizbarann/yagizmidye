@@ -209,8 +209,7 @@
                 return response.json();
             })
             .then(data => {
-                alert("Sipariş başarıyla oluşturuldu. Sipariş No: " + data.id);
-                window.location.reload();
+                window.location.href = "/customer/success";
             })
             .catch(error => {
                 alert("Hata oluştu: " + error.message);

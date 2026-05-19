@@ -19,4 +19,8 @@ public class CustomerPageController {
         model.addAttribute("products", productService.getAllProducts());
         return "customer-menu";
     }
+    @GetMapping("/customer/success")
+    public String customerSuccessPage() {
+        return "customer-success";
+    }
 }
