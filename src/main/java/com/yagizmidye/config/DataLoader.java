@@ -7,17 +7,23 @@ import com.yagizmidye.repository.AppUserRepository;
 import com.yagizmidye.repository.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import com.yagizmidye.entity.RestaurantTable;
+import com.yagizmidye.entity.TableStatus;
+import com.yagizmidye.repository.RestaurantTableRepository;
 
 @Configuration
 public class DataLoader implements CommandLineRunner {
 
     private final ProductRepository productRepository;
     private final AppUserRepository appUserRepository;
+    private final RestaurantTableRepository restaurantTableRepository;
 
     public DataLoader(ProductRepository productRepository,
-                      AppUserRepository appUserRepository) {
+                      AppUserRepository appUserRepository,
+                      RestaurantTableRepository restaurantTableRepository) {
         this.productRepository = productRepository;
         this.appUserRepository = appUserRepository;
+        this.restaurantTableRepository = restaurantTableRepository;
     }
 
     @Override
@@ -66,8 +72,23 @@ public class DataLoader implements CommandLineRunner {
                     Role.WAITER
             );
 
+
             appUserRepository.save(admin);
             appUserRepository.save(waiter);
+            if (restaurantTableRepository.count() == 0) {
+
+                for (int i = 1; i <= 10; i++) {
+                    RestaurantTable table = new RestaurantTable(
+                            null,
+                            String.valueOf(i),
+                            TableStatus.EMPTY
+                    );
+
+                    restaurantTableRepository.save(table);
+                }
+
+                System.out.println("Masalar oluşturuldu.");
+            }
 
             System.out.println("Kullanıcılar oluşturuldu.");
         }

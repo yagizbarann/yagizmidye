@@ -230,6 +230,23 @@
                 grid-template-columns: 1fr;
             }
         }
+        .search-input {
+            width: 100%;
+            margin-bottom: 25px;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        .filter-select {
+            width: 100%;
+            margin-bottom: 25px;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+        }
     </style>
 </head>
 
@@ -247,6 +264,24 @@
 
     <h1>Müşteri Menüsü</h1>
     <p class="subtitle">Ana ürüne tıklayın, çeşitlerden adet seçip siparişinizi gönderin.</p>
+    <input
+            type="text"
+            id="productSearch"
+            class="search-input"
+            placeholder="Ürün ara... Örn: midye, kokoreç, hamsi">
+    <select id="categoryFilter" class="filter-select">
+
+        <option value="all">Tüm Kategoriler</option>
+
+        <option value="Midye Dolma">Midye Dolma</option>
+
+        <option value="Kokoreç">Kokoreç</option>
+
+        <option value="Çiğköfte">Çiğköfte</option>
+
+        <option value="Balık Ekmek">Balık Ekmek</option>
+
+    </select>
 
     <form id="orderForm">
 
@@ -428,6 +463,86 @@
             .catch(error => {
                 alert("Hata oluştu: " + error.message);
             });
+    });
+    document.getElementById("productSearch").addEventListener("input", function () {
+        const searchText = this.value.toLowerCase();
+
+        document.querySelectorAll(".category-card").forEach(categoryCard => {
+            let categoryHasVisibleProduct = false;
+
+            categoryCard.querySelectorAll(".product-item").forEach(productItem => {
+                const productName = productItem.querySelector("h4").textContent.toLowerCase();
+
+                if (productName.includes(searchText)) {
+                    productItem.style.display = "block";
+                    categoryHasVisibleProduct = true;
+                } else {
+                    productItem.style.display = "none";
+                }
+            });
+
+            const productList = categoryCard.querySelector(".product-list");
+            const arrow = categoryCard.querySelector(".arrow");
+
+            if (searchText.length > 0 && categoryHasVisibleProduct) {
+                categoryCard.style.display = "block";
+                productList.style.display = "block";
+                arrow.textContent = "-";
+            } else if (searchText.length > 0 && !categoryHasVisibleProduct) {
+                categoryCard.style.display = "none";
+            } else {
+                categoryCard.style.display = "block";
+                productList.style.display = "none";
+                arrow.textContent = "+";
+
+                categoryCard.querySelectorAll(".product-item").forEach(productItem => {
+                    productItem.style.display = "block";
+                });
+            }
+        });
+    });
+    document.getElementById("categoryFilter").addEventListener("change", function () {
+
+        const selectedCategory = this.value;
+
+        document.querySelectorAll(".category-card").forEach(categoryCard => {
+
+            const categoryName = categoryCard
+                .querySelector("h3")
+                .textContent
+                .trim();
+
+            const productList = categoryCard.querySelector(".product-list");
+            const arrow = categoryCard.querySelector(".arrow");
+
+            if (selectedCategory === "all") {
+
+                categoryCard.style.display = "block";
+
+                productList.style.display = "none";
+
+                arrow.textContent = "+";
+
+                categoryCard.querySelectorAll(".product-item").forEach(productItem => {
+                    productItem.style.display = "block";
+                });
+
+            } else {
+
+                if (categoryName === selectedCategory) {
+
+                    categoryCard.style.display = "block";
+
+                    productList.style.display = "block";
+
+                    arrow.textContent = "-";
+
+                } else {
+
+                    categoryCard.style.display = "none";
+                }
+            }
+        });
     });
 
     updateCartSummary();

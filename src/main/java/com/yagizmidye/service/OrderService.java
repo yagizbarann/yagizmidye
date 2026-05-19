@@ -10,17 +10,26 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import com.yagizmidye.repository.RestaurantTableRepository;
+import com.yagizmidye.entity.RestaurantTable;
 
 @Service
 public class OrderService {
 
     private final CustomerOrderRepository customerOrderRepository;
     private final ProductRepository productRepository;
+    private final RestaurantTableRepository restaurantTableRepository;
+    public List<RestaurantTable> getAllTables() {
+        return restaurantTableRepository.findAll();
+    }
 
     public OrderService(CustomerOrderRepository customerOrderRepository,
-                        ProductRepository productRepository) {
+                        ProductRepository productRepository,
+                        RestaurantTableRepository restaurantTableRepository) {
         this.customerOrderRepository = customerOrderRepository;
         this.productRepository = productRepository;
+        this.restaurantTableRepository = restaurantTableRepository;
+
     }
 
     public CustomerOrder createOrder(CreateOrderRequest request) {
@@ -31,6 +40,11 @@ public class OrderService {
         order.setTableNumber(request.getTableNumber());
         order.setCreatedDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
+        RestaurantTable table = restaurantTableRepository.findByTableNumber(request.getTableNumber())
+                .orElseThrow(() -> new RuntimeException("Table not found"));
+
+        table.setStatus(TableStatus.OCCUPIED);
+        restaurantTableRepository.save(table);
 
         List<OrderItem> orderItems = new ArrayList<>();
 
@@ -75,6 +89,13 @@ public class OrderService {
         CustomerOrder order = getOrderById(id);
 
         order.setStatus(status);
+        if (status == OrderStatus.SERVED || status == OrderStatus.CANCELLED) {
+            RestaurantTable table = restaurantTableRepository.findByTableNumber(order.getTableNumber())
+                    .orElseThrow(() -> new RuntimeException("Table not found"));
+
+            table.setStatus(TableStatus.EMPTY);
+            restaurantTableRepository.save(table);
+        }
 
         return customerOrderRepository.save(order);
     }
@@ -108,5 +129,12 @@ public class OrderService {
                 .stream()
                 .filter(order -> order.getStatus() == OrderStatus.CANCELLED)
                 .count();
+    }
+    public List<CustomerOrder> getActiveTableOrders() {
+        return customerOrderRepository.findAll()
+                .stream()
+                .filter(order -> order.getStatus() != OrderStatus.SERVED)
+                .filter(order -> order.getStatus() != OrderStatus.CANCELLED)
+                .toList();
     }
 }

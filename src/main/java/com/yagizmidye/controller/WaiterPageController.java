@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.yagizmidye.entity.OrderStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class WaiterPageController {
@@ -19,6 +20,7 @@ public class WaiterPageController {
 
     @GetMapping("/waiter/orders")
     public String waiterOrdersPage(Model model) {
+        model.addAttribute("tables", orderService.getAllTables());
         model.addAttribute("orders", orderService.getAllOrders());
         return "waiter-orders";
     }
@@ -31,5 +33,10 @@ public class WaiterPageController {
         orderService.updateOrderStatus(orderId, status);
 
         return "redirect:/waiter/orders";
+    }
+    @GetMapping("/waiter/orders/count")
+    @ResponseBody
+    public long getOrderCount() {
+        return orderService.getAllOrders().size();
     }
 }

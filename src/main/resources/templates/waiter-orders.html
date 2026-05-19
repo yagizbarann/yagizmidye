@@ -5,7 +5,6 @@
     <title>Yağız Midye - Garson Paneli</title>
 
     <style>
-
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -19,6 +18,16 @@
             padding: 18px 40px;
             font-size: 22px;
             font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 15px;
         }
 
         .container {
@@ -55,6 +64,7 @@
         th, td {
             padding: 16px;
             text-align: left;
+            vertical-align: top;
         }
 
         tbody tr {
@@ -70,8 +80,32 @@
             border-radius: 20px;
             font-size: 13px;
             font-weight: bold;
-            background: #e0f2fe;
-            color: #0369a1;
+            display: inline-block;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .preparing {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .ready {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .served {
+            background: #dcfce7;
+            color: #166534;
         }
 
         .price {
@@ -82,6 +116,7 @@
         .action-buttons {
             display: flex;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .action-buttons button {
@@ -106,25 +141,77 @@
             background: #16a34a;
         }
 
-        .action-buttons button:hover {
-            opacity: 0.85;
-        }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-size: 15px;
-        }
         .cancelled-btn {
             background: #dc2626;
         }
 
+        .action-buttons button:hover {
+            opacity: 0.85;
+        }
+        .new-order-alert {
+            display: none;
+            background: #dcfce7;
+            color: #166534;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .table-status-box {
+            background: #f9fafb;
+            padding: 22px;
+            border-radius: 16px;
+            margin-bottom: 28px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .table-header h2 {
+            margin: 0;
+            color: #111827;
+        }
+
+        .table-status-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .table-status-card {
+            width: 120px;
+            height: 85px;
+            border-radius: 16px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-weight: bold;
+        }
+
+        .empty-table {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+        }
+
+        .occupied-table {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+
+        .table-number {
+            font-size: 18px;
+        }
+
+        .table-status-text {
+            margin-top: 6px;
+            font-size: 13px;
+        }
     </style>
 </head>
 
@@ -143,8 +230,40 @@
         Gelen siparişleri buradan takip edebilirsiniz.
     </p>
 
-    <table>
 
+    <div id="newOrderAlert" class="new-order-alert">
+        🔔 Yeni sipariş geldi! Sayfa yenileniyor...
+    </div>
+
+    <div class="table-status-box">
+
+        <div class="table-header">
+            <h2>Masa Durumları</h2>
+        </div>
+
+        <div class="table-status-list">
+
+            <div class="table-status-card"
+                 th:each="table : ${tables}"
+                 th:classappend="${table.status.name() == 'OCCUPIED'} ? ' occupied-table' : ' empty-table'">
+
+                <div class="table-number">
+                    Masa <span th:text="${table.tableNumber}"></span>
+                </div>
+
+                <div class="table-status-text"
+                     th:text="${table.status.name() == 'OCCUPIED'} ? 'Dolu' : 'Boş'">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <table>
         <thead>
         <tr>
             <th>Sipariş ID</th>
@@ -158,7 +277,6 @@
         </thead>
 
         <tbody>
-
         <tr th:each="order : ${orders}">
 
             <td th:text="${order.id}"></td>
@@ -166,29 +284,37 @@
             <td th:text="${order.customerName}"></td>
 
             <td th:text="${order.tableNumber}"></td>
+
             <td>
-
                 <div th:each="item : ${order.orderItems}">
-
                     <b th:text="${item.quantity}"></b>x
                     <span th:text="${item.product.name}"></span>
-
                 </div>
-
             </td>
 
-            <td class="price"
-                th:text="${order.totalPrice} + ' TL'">
-            </td>
+            <td class="price" th:text="${order.totalPrice} + ' TL'"></td>
 
             <td>
-                <span class="status"
-                      th:text="${order.status}">
+                <span
+                        class="status"
+                        th:classappend="
+                            ${order.status.name() == 'PENDING'} ? ' pending' :
+                            (${order.status.name() == 'PREPARING'} ? ' preparing' :
+                            (${order.status.name() == 'READY'} ? ' ready' :
+                            (${order.status.name() == 'CANCELLED'} ? ' cancelled' :
+                            (${order.status.name() == 'SERVED'} ? ' served' : ''))))
+                        "
+                        th:text="
+                            ${order.status.name() == 'PENDING'} ? 'Bekliyor' :
+                            (${order.status.name() == 'PREPARING'} ? 'Hazırlanıyor' :
+                            (${order.status.name() == 'READY'} ? 'Hazır' :
+                            (${order.status.name() == 'CANCELLED'} ? 'İptal Edildi' :
+                            (${order.status.name() == 'SERVED'} ? 'Teslim Edildi' : 'Bilinmiyor'))))
+                        ">
                 </span>
             </td>
 
             <td>
-
                 <form action="/waiter/orders/status"
                       method="post"
                       class="action-buttons">
@@ -201,7 +327,6 @@
                             name="status"
                             value="PREPARING"
                             class="preparing-btn">
-
                         Hazırlanıyor
                     </button>
 
@@ -209,7 +334,6 @@
                             name="status"
                             value="READY"
                             class="ready-btn">
-
                         Hazır
                     </button>
 
@@ -217,28 +341,50 @@
                             name="status"
                             value="SERVED"
                             class="served-btn">
-
                         Teslim Edildi
                     </button>
+
                     <button type="submit"
                             name="status"
                             value="CANCELLED"
                             class="cancelled-btn">
-
                         İptal Et
                     </button>
 
                 </form>
-
             </td>
 
         </tr>
-
         </tbody>
-
     </table>
 
 </div>
+<script>
+    const notificationSound = new Audio(
+        "https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
+    );
+    let currentOrderCount = 0;
 
+    fetch("/waiter/orders/count")
+        .then(response => response.json())
+        .then(count => {
+            currentOrderCount = count;
+        });
+
+    setInterval(() => {
+        fetch("/waiter/orders/count")
+            .then(response => response.json())
+            .then(count => {
+                if (count > currentOrderCount) {
+                    document.getElementById("newOrderAlert").style.display = "block";
+                    notificationSound.play();
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 5000);
+                }
+            });
+    }, 5000);
+</script>
 </body>
 </html>
