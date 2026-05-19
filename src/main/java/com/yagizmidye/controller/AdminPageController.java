@@ -33,6 +33,7 @@ public class AdminPageController {
 
         model.addAttribute("pendingOrders", orderService.getPendingOrderCount());
 
+        model.addAttribute("cancelledOrders", orderService.getCancelledOrderCount());
         return "admin-products";
     }
 

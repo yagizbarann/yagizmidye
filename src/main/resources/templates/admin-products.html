@@ -152,6 +152,10 @@
             border: 1px solid #d1d5db;
             border-radius: 8px;
         }
+
+        .cancelled-card {
+            background: #dc2626;
+        }
     </style>
 </head>
 
@@ -185,6 +189,11 @@
         <div class="stat-card">
             <h3>Bekleyen Sipariş</h3>
             <p th:text="${pendingOrders}"></p>
+        </div>
+
+        <div class="stat-card cancelled-card">
+            <h3>İptal Edilen Sipariş</h3>
+            <p th:text="${cancelledOrders}"></p>
         </div>
 
     </div>

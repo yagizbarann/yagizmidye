@@ -79,13 +79,18 @@ public class OrderService {
         return customerOrderRepository.save(order);
     }
     public long getTotalOrderCount() {
-        return customerOrderRepository.count();
+
+        return customerOrderRepository.findAll()
+                .stream()
+                .filter(order -> order.getStatus() != OrderStatus.CANCELLED)
+                .count();
     }
 
     public double getTotalRevenue() {
 
         return customerOrderRepository.findAll()
                 .stream()
+                .filter(order -> order.getStatus() != OrderStatus.CANCELLED)
                 .mapToDouble(CustomerOrder::getTotalPrice)
                 .sum();
     }
@@ -95,6 +100,13 @@ public class OrderService {
         return customerOrderRepository.findAll()
                 .stream()
                 .filter(order -> order.getStatus() == OrderStatus.PENDING)
+                .count();
+    }
+    public long getCancelledOrderCount() {
+
+        return customerOrderRepository.findAll()
+                .stream()
+                .filter(order -> order.getStatus() == OrderStatus.CANCELLED)
                 .count();
     }
 }
