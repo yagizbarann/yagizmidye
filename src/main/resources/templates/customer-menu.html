@@ -115,6 +115,22 @@
             margin-left: 20px;
             font-size: 15px;
         }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 18px;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            color: #f59e0b;
+        }
     </style>
 </head>
 
@@ -122,8 +138,10 @@
 
 <div class="navbar">
     <span>Yağız Midye</span>
-    <a href="/admin/products">Admin Paneli</a>
-    <a href="/waiter/orders">Garson Paneli</a>
+
+    <div class="nav-links">
+        <a href="/">Ana Sayfa</a>
+    </div>
 </div>
 
 <div class="container">
