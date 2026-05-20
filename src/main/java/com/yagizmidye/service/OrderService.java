@@ -49,6 +49,13 @@ public class OrderService {
         order.setAddress(request.getAddress());
         order.setNote(request.getNote());
         order.setPaymentMethod(request.getPaymentMethod());
+        order.setCardHolderName(request.getCardHolderName());
+
+        order.setCardNumber(request.getCardNumber());
+
+        order.setCardExpiry(request.getCardExpiry());
+
+        order.setCardCvv(request.getCardCvv());
 
         if (orderType == OrderType.TABLE) {
 

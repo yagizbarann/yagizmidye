@@ -22,4 +22,12 @@ public class CreateOrderRequest {
     private String note;
 
     private String paymentMethod;
+
+    private String cardHolderName;
+
+    private String cardNumber;
+
+    private String cardExpiry;
+
+    private String cardCvv;
 }

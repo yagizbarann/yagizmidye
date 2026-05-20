@@ -39,6 +39,14 @@ public class CustomerOrder {
 
     private LocalDateTime createdDate;
 
+    private String cardHolderName;
+
+    private String cardNumber;
+
+    private String cardExpiry;
+
+    private String cardCvv;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 

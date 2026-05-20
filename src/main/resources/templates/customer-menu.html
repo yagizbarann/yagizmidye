@@ -5,22 +5,30 @@
     <title>Yağız Midye - Müşteri Menüsü</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #222;
+            background: #fff7ed;
+            color: #111827;
         }
 
         .navbar {
             background: #111827;
             color: white;
-            padding: 18px 40px;
+            padding: 18px 60px;
             font-size: 22px;
             font-weight: bold;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .navbar span {
+            color: #f59e0b;
         }
 
         .nav-links a {
@@ -31,40 +39,51 @@
             font-weight: bold;
         }
 
+        .nav-links a:hover {
+            color: #f59e0b;
+        }
+
         .container {
-            max-width: 1150px;
+            max-width: 1180px;
             margin: 40px auto;
             background: white;
-            padding: 30px;
-            border-radius: 14px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            padding: 34px;
+            border-radius: 22px;
+            box-shadow: 0 14px 35px rgba(0,0,0,0.10);
         }
 
         h1 {
             margin-top: 0;
+            font-size: 38px;
             color: #111827;
         }
 
         .subtitle {
             color: #6b7280;
-            margin-bottom: 25px;
+            margin-bottom: 28px;
+            font-size: 17px;
         }
 
         input, select {
-            padding: 13px;
+            padding: 14px;
             border: 1px solid #d1d5db;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 15px;
             width: 100%;
-            box-sizing: border-box;
+            background: white;
         }
 
-        .search-input,
-        .filter-select {
+        input:focus, select:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+        }
+
+        .search-filter-area {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 14px;
             margin-bottom: 25px;
-            padding: 14px;
-            border-radius: 10px;
-            font-size: 16px;
         }
 
         .customer-info {
@@ -72,6 +91,10 @@
             grid-template-columns: 1fr 1fr 1fr;
             gap: 14px;
             margin-bottom: 18px;
+            background: #fff7ed;
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid #fed7aa;
         }
 
         .online-fields {
@@ -79,6 +102,10 @@
             grid-template-columns: 1fr 1fr;
             gap: 14px;
             margin-bottom: 25px;
+            background: #f9fafb;
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
         }
 
         .online-fields .full {
@@ -91,34 +118,54 @@
             gap: 14px;
             background: #fff7ed;
             border: 1px solid #fed7aa;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 18px;
+            border-radius: 16px;
         }
 
         .card-fields.full {
             grid-column: span 2;
         }
 
+        .card-title {
+            grid-column: span 2;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .card-help {
+            grid-column: span 2;
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: -4px;
+        }
+
+        .input-error {
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+        }
+
         .menu-layout {
             display: grid;
-            grid-template-columns: 1fr 330px;
-            gap: 22px;
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
             align-items: start;
         }
 
         .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 18px;
             align-items: flex-start;
         }
 
         .category-card {
             border: 1px solid #e5e7eb;
-            border-radius: 16px;
+            border-radius: 18px;
             background: #f9fafb;
             overflow: hidden;
             align-self: start;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.05);
         }
 
         .category-header {
@@ -136,7 +183,7 @@
         }
 
         .arrow {
-            font-size: 20px;
+            font-size: 22px;
             color: #f59e0b;
             font-weight: bold;
         }
@@ -150,16 +197,16 @@
         .product-item {
             background: white;
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 14px;
             margin-bottom: 12px;
             border: 1px solid #e5e7eb;
         }
 
         .product-image {
             width: 100%;
-            height: 140px;
+            height: 145px;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: 12px;
             margin-bottom: 12px;
             background: #e5e7eb;
         }
@@ -188,10 +235,11 @@
         .cart-summary {
             background: #fff7ed;
             border: 1px solid #fed7aa;
-            padding: 20px;
-            border-radius: 16px;
+            padding: 22px;
+            border-radius: 18px;
             position: sticky;
             top: 20px;
+            box-shadow: 0 8px 22px rgba(0,0,0,0.08);
         }
 
         .cart-summary h2 {
@@ -227,33 +275,51 @@
         }
 
         .submit-btn {
-            margin-top: 25px;
+            margin-top: 28px;
             width: 100%;
             border: none;
             background: #f59e0b;
             color: white;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 17px;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
         }
 
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
         @media (max-width: 900px) {
+            .navbar {
+                padding: 18px 25px;
+                flex-direction: column;
+                gap: 12px;
+            }
+
             .menu-layout,
             .customer-info,
             .online-fields,
-            .card-fields {
+            .card-fields,
+            .search-filter-area {
                 grid-template-columns: 1fr;
             }
 
             .online-fields .full,
-            .card-fields.full {
+            .card-fields.full,
+            .card-title,
+            .card-help {
                 grid-column: span 1;
             }
 
             .cart-summary {
                 position: static;
+            }
+
+            .container {
+                margin: 20px;
+                padding: 24px;
             }
         }
     </style>
@@ -274,20 +340,22 @@
     <h1>Müşteri Menüsü</h1>
     <p class="subtitle">Masada veya online sipariş verebilirsiniz.</p>
 
-    <input
-            type="text"
-            id="productSearch"
-            class="search-input"
-            placeholder="Ürün ara... Örn: midye, kokoreç, hamsi">
+    <div class="search-filter-area">
+        <input
+                type="text"
+                id="productSearch"
+                class="search-input"
+                placeholder="Ürün ara... Örn: midye, kokoreç, hamsi">
 
-    <select id="categoryFilter" class="filter-select">
-        <option value="all">Tüm Kategoriler</option>
-        <option value="Midye Dolma">Midye Dolma</option>
-        <option value="Kokoreç">Kokoreç</option>
-        <option value="Çiğköfte">Çiğköfte</option>
-        <option value="Balık Ekmek">Balık Ekmek</option>
-        <option value="İçecekler">İçecekler</option>
-    </select>
+        <select id="categoryFilter" class="filter-select">
+            <option value="all">Tüm Kategoriler</option>
+            <option value="Midye Dolma">Midye Dolma</option>
+            <option value="Kokoreç">Kokoreç</option>
+            <option value="Çiğköfte">Çiğköfte</option>
+            <option value="Balık Ekmek">Balık Ekmek</option>
+            <option value="İçecekler">İçecekler</option>
+        </select>
+    </div>
 
     <form id="orderForm">
 
@@ -316,13 +384,26 @@
             <input type="text" id="note" class="full" placeholder="Sipariş Notu">
 
             <div id="cardFields" class="card-fields full">
+                <div class="card-title">💳  Online Ödeme Bilgileri</div>
+                <div class="card-help">Kart numarası 16 haneli olmalıdır. Örnek: 1234567812345678</div>
+
                 <input type="text" id="cardName" placeholder="Kart Üzerindeki İsim">
 
-                <input type="text" id="cardNumber" placeholder="Kart Numarası">
+                <input
+                        type="text"
+                        id="cardNumber"
+                        placeholder="Kart Numarası"
+                        maxlength="16"
+                        inputmode="numeric">
 
                 <input type="text" id="cardExpiry" placeholder="Son Kullanma Tarihi Örn: 12/28">
 
-                <input type="text" id="cardCvv" placeholder="CVV">
+                <input
+                        type="text"
+                        id="cardCvv"
+                        placeholder="CVV"
+                        maxlength="3"
+                        inputmode="numeric">
             </div>
         </div>
 
@@ -447,6 +528,9 @@
             cardNumber.value = "";
             cardExpiry.value = "";
             cardCvv.value = "";
+
+            cardNumber.classList.remove("input-error");
+            cardCvv.classList.remove("input-error");
         }
     }
 
@@ -505,6 +589,16 @@
         input.addEventListener("input", updateCartSummary);
     });
 
+    document.getElementById("cardNumber").addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "").slice(0, 16);
+        this.classList.remove("input-error");
+    });
+
+    document.getElementById("cardCvv").addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "").slice(0, 3);
+        this.classList.remove("input-error");
+    });
+
     document.getElementById("orderForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
@@ -556,7 +650,17 @@
                     return;
                 }
 
-                alert("Demo ödeme başarıyla alındı.");
+                if (!/^\d{16}$/.test(cardNumber)) {
+                    document.getElementById("cardNumber").classList.add("input-error");
+                    alert("Kart numarası 16 haneli olmalıdır.");
+                    return;
+                }
+
+                if (!/^\d{3}$/.test(cardCvv)) {
+                    document.getElementById("cardCvv").classList.add("input-error");
+                    alert("CVV 3 haneli olmalıdır.");
+                    return;
+                }
             }
         }
 
@@ -566,13 +670,29 @@
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
+
                 customerName: customerName,
+
                 tableNumber: tableNumber,
+
                 orderType: orderType,
+
                 phone: document.getElementById("phone").value,
+
                 address: document.getElementById("address").value,
+
                 note: document.getElementById("note").value,
+
                 paymentMethod: document.getElementById("paymentMethod").value,
+
+                cardHolderName: document.getElementById("cardName").value,
+
+                cardNumber: document.getElementById("cardNumber").value,
+
+                cardExpiry: document.getElementById("cardExpiry").value,
+
+                cardCvv: document.getElementById("cardCvv").value,
+
                 items: items
             })
         })
