@@ -86,7 +86,7 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
+            grid-template-columns: 1fr 1fr 0.8fr 0.8fr 1fr 1fr auto;
             gap: 12px;
         }
 
@@ -168,7 +168,7 @@
 
         .edit-grid {
             display: grid;
-            grid-template-columns: 1fr 1.5fr 0.8fr 1fr 1.3fr 0.8fr auto;
+            grid-template-columns: 1fr 1.5fr 0.7fr 0.7fr 1fr 1.2fr 0.8fr auto;
             gap: 10px;
             align-items: start;
         }
@@ -248,6 +248,13 @@
 
             <input type="number" th:field="*{price}" placeholder="Fiyat" step="0.01" required>
 
+            <input type="number"
+                   th:field="*{discountRate}"
+                   placeholder="İndirim %"
+                   min="0"
+                   max="100"
+                   step="1">
+
             <select th:field="*{category}" required>
                 <option value="">Kategori Seç</option>
                 <option value="Midye Dolma">Midye Dolma</option>
@@ -306,6 +313,14 @@
                         <input type="text" name="description" th:value="${product.description}" required>
 
                         <input type="number" name="price" th:value="${product.price}" step="0.01" required>
+
+                        <input type="number"
+                               name="discountRate"
+                               th:value="${product.discountRate}"
+                               placeholder="İndirim %"
+                               min="0"
+                               max="100"
+                               step="1">
 
                         <select name="category" required>
                             <option value="Midye Dolma"

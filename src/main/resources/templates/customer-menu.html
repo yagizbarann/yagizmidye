@@ -322,6 +322,32 @@
                 padding: 24px;
             }
         }
+        .price-box {
+            margin-bottom: 10px;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #9ca3af;
+            font-size: 13px;
+            margin-right: 8px;
+        }
+
+        .discount-badge {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #16a34a;
+            margin-top: 8px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -431,7 +457,25 @@
 
                             <p class="description" th:text="${product.description}"></p>
 
-                            <div class="price" th:text="${product.price} + ' TL'"></div>
+                            <div class="price-box">
+
+                                <div th:if="${product.discountRate != null and product.discountRate > 0}">
+                                    <span class="old-price" th:text="${product.price} + ' TL'"></span>
+
+                                    <span class="discount-badge"
+                                          th:text="'%' + ${product.discountRate} + ' indirim'">
+        </span>
+
+                                    <div class="price"
+                                         th:text="${product.price - (product.price * product.discountRate / 100)} + ' TL'">
+                                    </div>
+                                </div>
+
+                                <div th:if="${product.discountRate == null or product.discountRate == 0}">
+                                    <div class="price" th:text="${product.price} + ' TL'"></div>
+                                </div>
+
+                            </div>
 
                             <input
                                     type="number"
@@ -440,7 +484,8 @@
                                     value="0"
                                     th:attr="data-product-id=${product.id},
                                              data-product-name=${product.name},
-                                             data-product-price=${product.price}">
+                                             data-product-price=${product.price},
+                                             data-product-discount=${product.discountRate}">
                         </div>
 
                     </div>
@@ -455,7 +500,7 @@
                 <div id="cartList">
                     <p class="empty-cart">Sepetiniz boş.</p>
                 </div>
-
+                <div id="discountInfo"></div>
                 <div class="cart-total">
                     <span>Toplam:</span>
                     <strong id="cartTotal">0.00 TL</strong>
@@ -556,14 +601,24 @@
     function updateCartSummary() {
         const cartItems = [];
         let total = 0;
+        let originalTotal = 0;
+        let totalDiscount = 0;
 
         document.querySelectorAll(".quantity").forEach(input => {
             const quantity = parseInt(input.value) || 0;
             const productName = input.getAttribute("data-product-name");
             const productPrice = parseFloat(input.getAttribute("data-product-price")) || 0;
+            const productDiscount = parseFloat(input.getAttribute("data-product-discount")) || 0;
+
+            const finalPrice = productPrice - (productPrice * productDiscount / 100);
 
             if (quantity > 0) {
-                const subtotal = quantity * productPrice;
+                const originalSubtotal = quantity * productPrice;
+                const subtotal = quantity * finalPrice;
+                const discountAmount = originalSubtotal - subtotal;
+
+                originalTotal += originalSubtotal;
+                totalDiscount += discountAmount;
                 total += subtotal;
 
                 cartItems.push(`
@@ -581,6 +636,23 @@
         cartList.innerHTML = cartItems.length === 0
             ? "<p class='empty-cart'>Sepetiniz boş.</p>"
             : cartItems.join("");
+        const discountInfo = document.getElementById("discountInfo");
+
+        if (totalDiscount > 0) {
+            discountInfo.innerHTML = `
+        <div class="cart-row">
+            <span>İndirimsiz Toplam</span>
+            <strong>${originalTotal.toFixed(2)} TL</strong>
+        </div>
+
+        <div class="cart-row">
+            <span>Toplam İndirim</span>
+            <strong>-${totalDiscount.toFixed(2)} TL</strong>
+        </div>
+    `;
+        } else {
+            discountInfo.innerHTML = "";
+        }
 
         cartTotal.textContent = total.toFixed(2) + " TL";
     }

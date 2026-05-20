@@ -80,7 +80,15 @@ public class OrderService {
             orderItem.setProduct(product);
             orderItem.setQuantity(itemRequest.getQuantity());
 
-            double itemPrice = product.getPrice() * itemRequest.getQuantity();
+            double discount = product.getDiscountRate() != null
+                    ? product.getDiscountRate()
+                    : 0.0;
+
+            double discountedPrice =
+                    product.getPrice() - (product.getPrice() * discount / 100);
+
+            double itemPrice =
+                    discountedPrice * itemRequest.getQuantity();
 
             orderItem.setPrice(itemPrice);
             orderItem.setCustomerOrder(order);

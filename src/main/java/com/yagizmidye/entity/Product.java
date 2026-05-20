@@ -26,4 +26,6 @@ public class Product {
     private String category;
 
     private String imageUrl;
+
+    private Double discountRate;
 }
