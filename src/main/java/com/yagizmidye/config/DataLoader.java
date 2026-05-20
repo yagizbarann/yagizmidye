@@ -50,6 +50,7 @@ public class DataLoader implements CommandLineRunner {
             productRepository.save(new Product(null, "Sardalya Balık Ekmek", "Denizin favori balığı sardalyadan balık ekmek", 220.0, true, "Balık Ekmek", "/images/products/sardalya-balik.jpeg",0.0));
             productRepository.save(new Product(null, "Hamsi Balık Ekmek", "Hızlı ve pratik karadeniz hamsisinden balık ekmek", 160.0, true, "Balık Ekmek", "/images/products/hamsi-balik.jpeg",0.0));
             productRepository.save(new Product(null, "Mezgit Balık Ekmek", "Halkın gurme lezzeti mezgit balık ekmek", 255.0, true, "Balık Ekmek", "/images/products/mezgit-balik.jpeg",0.0));
+
             productRepository.save(new Product(
                     null,
                     "Kola",
