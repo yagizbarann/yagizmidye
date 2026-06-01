@@ -46,10 +46,20 @@ public class ProductService {
         Product product = getProductById(id);
         productRepository.delete(product);
     }
+
     public long getProductCount() {
         return productRepository.count();
     }
+
     public List<Product> getActiveProducts() {
         return productRepository.findByActiveTrue();
+    }
+
+    public List<Product> getProductsByCategory(String category) {
+        return productRepository.findByCategory(category);
+    }
+
+    public List<Product> searchProductsByName(String name) {
+        return productRepository.findByNameContainingIgnoreCase(name);
     }
 }

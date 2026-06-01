@@ -1,5 +1,6 @@
 package com.yagizmidye.controller;
 
+import com.yagizmidye.entity.CustomerOrder;
 import com.yagizmidye.service.OrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,14 +26,13 @@ public class WaiterPageController {
         return "waiter-orders";
     }
     @PostMapping("/waiter/orders/status")
-    public String updateOrderStatus(
+    @ResponseBody
+    public CustomerOrder updateOrderStatus(
             @RequestParam Long orderId,
             @RequestParam OrderStatus status
     ) {
 
-        orderService.updateOrderStatus(orderId, status);
-
-        return "redirect:/waiter/orders";
+        return orderService.updateOrderStatus(orderId, status);
     }
     @GetMapping("/waiter/orders/count")
     @ResponseBody

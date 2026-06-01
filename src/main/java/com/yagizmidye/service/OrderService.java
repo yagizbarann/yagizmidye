@@ -167,4 +167,15 @@ public class OrderService {
                 .filter(order -> order.getStatus() != OrderStatus.CANCELLED)
                 .toList();
     }
+    public List<CustomerOrder> getOrdersByStatus(OrderStatus status) {
+        return customerOrderRepository.findByStatus(status);
+    }
+
+    public List<CustomerOrder> getOrdersByOrderType(OrderType orderType) {
+        return customerOrderRepository.findByOrderType(orderType);
+    }
+
+    public List<CustomerOrder> getOrdersByTableNumber(String tableNumber) {
+        return customerOrderRepository.findByTableNumber(tableNumber);
+    }
 }
